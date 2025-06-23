@@ -3,27 +3,26 @@ import React, { useContext, useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import { useNavigate, useLocation } from "react-router-dom";
 import { BlogContext } from "../../contexts";
+import Lottie from "lottie-react";
+import editAnim from "../../assets/edit-animation.json"; // 🎞 Replace with your animation
+import { motion } from "framer-motion";
 
 const Edit = () => {
   const navigate = useNavigate();
   const blog = useLocation();
   const { fetchBlog } = useContext(BlogContext);
+
   const { _id } = blog.state.blog.state.blog;
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
+
   const editBlog = async () => {
-    console.log(_id);
     try {
       const response = await axios.post(
         `http://localhost:9700/blog/update/${_id}`,
+        { title, text },
         {
-          title,
-          text,
-        },
-        {
-          headers: {
-            "Content-type": "application/json",
-          },
+          headers: { "Content-type": "application/json" },
           withCredentials: true,
         }
       );
@@ -38,24 +37,48 @@ const Edit = () => {
   };
 
   return (
-    <div className="mt-16 flex flex-col gap-3 items-center">
-      <h1 className="font-semibold text-3xl">Edit</h1>
-      <input
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Title"
-        className="px-3 text-md w-[600px] h-9 border-2 rounded-md"
-      ></input>
-      <textarea
-        onChange={(e) => setText(e.target.value)}
-        placeholder="Text"
-        className="p-2 w-[600px] h-[300px] text-md  border-2 rounded-md"
-      ></textarea>
-      <button
-        onClick={editBlog}
-        className="px-3 bg-slate-800 h-9 text-white text-md w-2/4 border-2 rounded-md"
-      >
-        Edit
-      </button>
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-red-50 flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 bg-white rounded-xl shadow-lg overflow-hidden">
+        {/* Left - Lottie Animation */}
+        <div className="flex items-center justify-center bg-white p-8">
+          <Lottie animationData={editAnim} loop={true} className="w-full max-w-md" />
+        </div>
+
+        {/* Right - Edit Form */}
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4 }}
+          className="p-8"
+        >
+          <h1 className="text-3xl font-bold text-red-600 mb-6 text-center">
+            Edit Blog Post
+          </h1>
+
+          <div className="flex flex-col gap-5">
+            <input
+              type="text"
+              placeholder="Enter new title"
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full border border-gray-300 rounded px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition-all"
+            />
+
+            <textarea
+              rows={10}
+              placeholder="Update your blog content..."
+              onChange={(e) => setText(e.target.value)}
+              className="w-full border border-gray-300 rounded px-4 py-3 text-md focus:outline-none focus:ring-2 focus:ring-red-500 transition-all resize-none"
+            ></textarea>
+
+            <button
+              onClick={editBlog}
+              className="bg-red-600 text-white py-3 rounded text-lg hover:bg-red-700 transition-all"
+            >
+              Update Blog
+            </button>
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 };

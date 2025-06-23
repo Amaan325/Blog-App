@@ -6,4 +6,6 @@ import View from "./Blog/View";
 import Create from "./Blog/Create";
 import Edit from "./Blog/Edit";
 import Delete from "./Blog/Delete";
-export { Home, Login, Register, Logout, View, Create, Edit,Delete };
+import About from "../pages/About";
+import Contact from "../pages/Contact";
+export { Home, Login, Register, Logout, View, Create, Edit,Delete , About , Contact};

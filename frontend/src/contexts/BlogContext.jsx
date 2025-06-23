@@ -15,7 +15,7 @@ const BlogState = (props) => {
         console.log(blog);
       }
     } catch (error) {
-      console.log("Error", error);
+      console.log("Error", error.message);
     }
   };
   useEffect(() => {

@@ -8,6 +8,8 @@ import {
   Create,
   Edit,
   Delete,
+  About , 
+  Contact
 } from "./pages/index";
 import { SnackbarProvider } from "notistack";
 import { UserState, BlogState, CommentState } from "./contexts/index";
@@ -17,7 +19,7 @@ import Navbar from "./components/Navbar";
 const App = () => {
   return (
     <SnackbarProvider autoHideDuration={1000}>
-      <div className="px-36 py-9">
+      <div className="">
         <BlogState>
           <UserState>
             <CommentState>
@@ -32,6 +34,8 @@ const App = () => {
                   <Route path="/create-blog" element={<Create />} />
                   <Route path="/update-blog" element={<Edit />} />
                   <Route path="/delete-blog" element={<Delete />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
                 </Routes>
               </Router>
             </CommentState>

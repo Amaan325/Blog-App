@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import axios from "axios";
 import { BlogContext, CommentContext, UserContext } from "../../contexts/index";
@@ -11,49 +11,63 @@ const AddComment = ({ blogId }) => {
   const { refresh } = useContext(CommentContext);
   const { userInfo } = useContext(UserContext);
   const [text, setText] = useState("");
+
   const addComment = async () => {
-    setText("");
-    if (!userInfo.username)
+    if (!userInfo?.username) {
       enqueueSnackbar("User must be logged in", { variant: "error" });
+      return;
+    }
+
     try {
-      const response = await axios.post(
-        "http://localhost:9700/api/blog/comment",
-        {
-          user: userInfo.username,
-          text: text,
-          blogId: blogId,
-        }
-      );
+      const response = await axios.post("http://localhost:9700/api/blog/comment", {
+        user: userInfo.username,
+        text: text,
+        blogId: blogId,
+      });
+
       if (response.status === 200) {
         enqueueSnackbar("Comment Added", { variant: "success" });
+        setText("");
         refresh();
-      } else enqueueSnackbar("Comment Not Added", { variant: "error" });
+      } else {
+        enqueueSnackbar("Comment Not Added", { variant: "error" });
+      }
     } catch (error) {
       console.log(error);
     }
   };
-  //   useEffect(() => console.log(blog));
-  return (
-    <>
-      <div className="mt-12 flex flex-col gap-3">
-        <p className="flex items-center mt-6 rounded-xl pl-2 h-12 w-full bg-gray-100  text-[19px] font-medium">
-          Comments
-        </p>
-        <ViewComment blogId={blogId} />
 
-        <p className="mt-12 text-[14px] font-medium">Add your comment</p>
+  return (
+    <div className="mt-12 bg-white shadow-md rounded-xl p-6">
+      {/* Comments Header */}
+      <h2 className="text-2xl font-semibold mb-4 text-gray-800 flex items-center gap-2">
+        <FaUserCircle className="text-red-500" />
+        Comments
+      </h2>
+
+      {/* Existing Comments */}
+      <ViewComment blogId={blogId} />
+
+      {/* Add Comment Section */}
+      <div className="mt-8">
+        <p className="text-[16px] font-medium mb-2 text-gray-700">Add your comment</p>
         <textarea
+          value={text}
           onChange={(e) => setText(e.target.value)}
-          className=" p-3 border-2 bg-gray-50 rounded-xl"
-        ></textarea>
-        <button
-          onClick={addComment}
-          className="border-2 w-20 h-8 bg-black text-white rounded-xl text-[14px]"
-        >
-          Post
-        </button>
+          className="w-full min-h-[120px] border border-gray-300 p-3 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-red-400 transition-all"
+          placeholder="Write your thoughts..."
+        />
+
+        <div className="mt-4">
+          <button
+            onClick={addComment}
+            className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-all text-sm"
+          >
+            Post
+          </button>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 
